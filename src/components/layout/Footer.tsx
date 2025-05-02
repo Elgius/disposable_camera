@@ -45,7 +45,8 @@ export default function Footer() {
     <footer className="w-full border-t bg-background">
       <div className="container py-6 flex flex-col md:flex-row justify-between items-center">
         <div className="text-sm text-muted-foreground">
-          © {currentYear} Oracle Viewer. All rights reserved.
+          © {currentYear} Oracle Viewer. All rights reserved. Made with ❤️ by
+          Elgius
         </div>
         <Button variant="ghost" onClick={() => setContactOpen(true)}>
           Contact Us
@@ -58,6 +59,7 @@ export default function Footer() {
             <DialogTitle>Contact Us</DialogTitle>
             <DialogDescription>
               Send us a message and we'll get back to you as soon as possible.
+              Also i will be at the wedding so meet me then too lol
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit}>
