@@ -3,7 +3,6 @@
 import React, { useCallback, useState } from "react";
 import Image from "next/image";
 import { useDropzone } from "react-dropzone";
-import { cn } from "@/lib/utils";
 import { Upload, X, Image as ImageIcon } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { ImageIcon, Upload } from "lucide-react";
 import { toast } from "sonner";
@@ -11,10 +10,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ImageCard from "@/components/shared/ImageCard";
 import UploadDialog from "@/components/dropzone/UploadDialog";
 import { ImageData } from "@/lib/types";
-import { getMyUploads, uploadImage, deleteImage } from "@/lib/api";
+import { getMyUploads, deleteImage } from "@/lib/api";
 
 export default function MyUploadsPage() {
-  const router = useRouter();
   const [images, setImages] = useState<ImageData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);

@@ -39,6 +39,7 @@ export default function UploadDialog({
       return true;
     } catch (error) {
       toast.error("Album not found. Please enter a valid album code.");
+      console.error("Album not found:", error);
       return false;
     } finally {
       setIsValidating(false);

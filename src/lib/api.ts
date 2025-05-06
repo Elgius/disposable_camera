@@ -7,15 +7,19 @@ import { ImageData, ApiResponse } from "./types";
 let myUploads: ImageData[] = [
   {
     id: "1",
+    name: "mountain-lake.jpg",
     url: "https://images.pexels.com/photos/3225517/pexels-photo-3225517.jpeg",
-    filename: "mountain-lake.jpg",
+    albumCode: "nature",
     createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+    updatedAt: new Date(Date.now() - 86400000 * 3).toISOString(),
   },
   {
     id: "2",
+    name: "beach-sunset.jpg",
     url: "https://images.pexels.com/photos/1591373/pexels-photo-1591373.jpeg",
-    filename: "beach-sunset.jpg",
+    albumCode: "nature",
     createdAt: new Date(Date.now() - 86400000 * 5).toISOString(),
+    updatedAt: new Date(Date.now() - 86400000 * 5).toISOString(),
   },
 ];
 
@@ -23,31 +27,35 @@ let galleryImages: ImageData[] = [
   ...myUploads,
   {
     id: "3",
+    name: "beautiful-landscape.jpg",
     url: "https://images.pexels.com/photos/417074/pexels-photo-417074.jpeg",
-    filename: "beautiful-landscape.jpg",
+    albumCode: "landscapes",
     createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
-    userId: "user2",
+    updatedAt: new Date(Date.now() - 86400000 * 2).toISOString(),
   },
   {
     id: "4",
+    name: "mountain-peak.jpg",
     url: "https://images.pexels.com/photos/3560168/pexels-photo-3560168.jpeg",
-    filename: "mountain-peak.jpg",
+    albumCode: "mountains",
     createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
-    userId: "user3",
+    updatedAt: new Date(Date.now() - 86400000 * 4).toISOString(),
   },
   {
     id: "5",
+    name: "aurora-borealis.jpg",
     url: "https://images.pexels.com/photos/1166209/pexels-photo-1166209.jpeg",
-    filename: "aurora-borealis.jpg",
+    albumCode: "nature",
     createdAt: new Date(Date.now() - 86400000 * 6).toISOString(),
-    userId: "user4",
+    updatedAt: new Date(Date.now() - 86400000 * 6).toISOString(),
   },
   {
     id: "6",
+    name: "night-city.jpg",
     url: "https://images.pexels.com/photos/1619317/pexels-photo-1619317.jpeg",
-    filename: "night-city.jpg",
+    albumCode: "cities",
     createdAt: new Date(Date.now() - 86400000 * 8).toISOString(),
-    userId: "user5",
+    updatedAt: new Date(Date.now() - 86400000 * 8).toISOString(),
   },
 ];
 
@@ -78,16 +86,19 @@ export async function getAllImages(
   };
 }
 
-export async function uploadImage(file: File): Promise<ApiResponse<ImageData>> {
+export async function uploadImage(
+  file: File,
+  albumCode: string
+): Promise<ApiResponse<ImageData>> {
   await delay(1200);
 
-  // In a real app, you would upload to a server
-  // Here we create a local URL and add to our mock data
   const newImage: ImageData = {
     id: Math.random().toString(36).substring(2, 9),
+    name: file.name,
     url: URL.createObjectURL(file),
-    filename: file.name,
+    albumCode,
     createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   myUploads = [newImage, ...myUploads];

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
 import path from "path";
 import fs from "fs/promises";
@@ -12,21 +13,18 @@ export async function GET(
   const albumPath = path.join(process.cwd(), "public", "Images", albumCode);
 
   try {
-    // Read files in the album directory
     const files = await fs.readdir(albumPath);
 
-    // Filter image files (optional: jpg, png, etc.)
     const imageFiles = files.filter((file) =>
       /\.(jpg|jpeg|png|gif|webp)$/i.test(file)
     );
 
-    // Construct image metadata
     const images = imageFiles.map((fileName) => {
       const uniqueCode = fileName.split(".")[0];
       return {
         id: uniqueCode,
         name: fileName,
-        url: `/Images/${albumCode}/${fileName}`, // Updated path for public directory
+        url: `/Images/${albumCode}/${fileName}`,
         albumCode,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
