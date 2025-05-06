@@ -111,7 +111,9 @@ export default function MyUploadsPage() {
       >
         <h1 className="text-3xl font-bold mb-2">My Uploads</h1>
         <p className="text-muted-foreground mb-8">
-          Upload and manage your personal image collection
+          Upload your images to the directories here. Since we are in Beta, no
+          images you upload will be stored in this page after you exit. All
+          images will be accessible at the albums you upload the images to.
         </p>
       </motion.div>
 

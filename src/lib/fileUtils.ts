@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 
-const IMAGES_DIR = path.join(process.cwd(), "Images");
+const IMAGES_DIR = path.join(process.cwd(), "public", "Images");
 
 export async function saveImageToAlbum(
   file: File,
@@ -37,10 +37,10 @@ export function getAlbumImages(albumCode: string): string[] {
 
   return fs
     .readdirSync(albumDir)
-    .filter((file) => /\.(jpg|jpeg|png|gif)$/i.test(file))
+    .filter((file) => /\.(jpg|jpeg|png|gif|webp)$/i.test(file))
     .map((file) => path.join(albumDir, file));
 }
 
 export function getImageUrl(albumCode: string, fileName: string): string {
-  return `/api/images/${albumCode}/${fileName}`;
+  return `/Images/${albumCode}/${fileName}`;
 }

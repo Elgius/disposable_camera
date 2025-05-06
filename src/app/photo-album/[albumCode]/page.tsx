@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, InfoIcon } from "lucide-react";
 import ImageCard from "@/components/shared/ImageCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { ImageData } from "@/lib/types";
 
 export default function AlbumPage() {
@@ -71,11 +72,24 @@ export default function AlbumPage() {
           ))}
         </div>
       ) : images.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {images.map((image) => (
-            <ImageCard key={image.id} image={image} isPreview={true} />
-          ))}
-        </div>
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
+            {images.map((image) => (
+              <ImageCard key={image.id} image={image} isPreview={true} />
+            ))}
+          </div>
+          <Card className="bg-muted/50">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-3">
+                <InfoIcon className="h-5 w-5 text-muted-foreground mt-0.5" />
+                <p className="text-sm text-muted-foreground">
+                  Image deletion is not available in this section. Please
+                  contact the folder owner to delete an image.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </>
       ) : (
         <div className="flex flex-col items-center justify-center p-8 bg-muted/30 rounded-lg text-center">
           <p className="text-muted-foreground">No images found in this album</p>
