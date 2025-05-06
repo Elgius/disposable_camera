@@ -42,9 +42,9 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="w-full border-t bg-background">
-      <div className="container py-6 flex flex-col md:flex-row justify-between items-center">
-        <div className="text-sm text-muted-foreground">
+    <footer className="w-full border-t bg-background flex-col">
+      <div className="container py-6 flex flex-col md:flex-row justify-center items-center gap-4">
+        <div className="text-sm text-muted-foreground text-center">
           © {currentYear} Oracle Viewer. All rights reserved. Made with ❤️ by
           Elgius
         </div>

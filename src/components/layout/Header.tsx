@@ -16,9 +16,9 @@ import {
 import { Menu } from "lucide-react";
 
 const navItems = [
-  { href: "/", label: "Our Wedding" },
-  { href: "/my-uploads", label: "Our Photos" },
-  { href: "/photo-album", label: "Guest Photos" },
+  { href: "/", label: "Home" },
+  { href: "/my-uploads", label: "My Uploads" },
+  { href: "/photo-album", label: "Global Albums" },
 ];
 
 export default function Header() {
@@ -85,9 +85,7 @@ export default function Header() {
             className="bg-background/95 backdrop-blur-md"
           >
             <SheetHeader className="mb-6">
-              <SheetTitle className="text-xl font-serif">
-                Our Wedding
-              </SheetTitle>
+              <SheetTitle className="text-xl font-serif">Home</SheetTitle>
             </SheetHeader>
             <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (
