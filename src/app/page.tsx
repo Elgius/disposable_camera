@@ -38,7 +38,7 @@ export default function Home() {
                   href="/my-uploads"
                   className="font-medium text-primary hover:underline transition-colors duration-300"
                 >
-                  Our Photos
+                  My Uploads
                 </Link>{" "}
                 - upload your pictures and create lasting memories.
               </p>
@@ -54,9 +54,9 @@ export default function Home() {
                   href="/photo-album"
                   className="font-medium text-primary hover:underline transition-colors duration-300"
                 >
-                  Guest Photos
+                  Global Albums
                 </Link>{" "}
-                to see all the beautiful moments captured by our loved ones.
+                to see all the beautiful moments captured by your loved ones.
               </p>
             </div>
 

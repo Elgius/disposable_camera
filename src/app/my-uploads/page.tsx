@@ -46,10 +46,26 @@ export default function MyUploadsPage() {
     console.log("Uploading to album:", albumCode);
 
     try {
-      const uploadPromises = files.map((file) => uploadImage(file));
-      const results = await Promise.all(uploadPromises);
+      const uploadPromises = files.map(async (file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("albumCode", albumCode);
 
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error("Upload failed");
+        }
+
+        return response.json();
+      });
+
+      const results = await Promise.all(uploadPromises);
       const successfulUploads = results.filter((result) => result.success);
+
       if (successfulUploads.length > 0) {
         setImages((prev) => [...successfulUploads.map((r) => r.data), ...prev]);
         toast.success(
