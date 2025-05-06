@@ -27,6 +27,24 @@ export default function UploadDialog({
 }: UploadDialogProps) {
   const [albumCode, setAlbumCode] = useState("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [isValidating, setIsValidating] = useState(false);
+
+  const validateAlbum = async (code: string) => {
+    setIsValidating(true);
+    try {
+      const response = await fetch(`/api/albums/${code}/validate`);
+      if (!response.ok) {
+        throw new Error("Album not found");
+      }
+      return true;
+    } catch (error) {
+      toast.error("Album not found. Please enter a valid album code.");
+      console.error("Album not found:", error);
+      return false;
+    } finally {
+      setIsValidating(false);
+    }
+  };
 
   const handleFileSelect = (file: File) => {
     // Check file size (35MB = 35 * 1024 * 1024 bytes)
@@ -37,7 +55,7 @@ export default function UploadDialog({
     setSelectedFiles((prev) => [...prev, file]);
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!albumCode.trim()) {
       toast.error("Please enter an album code");
       return;
@@ -46,6 +64,12 @@ export default function UploadDialog({
       toast.error("Please select at least one file");
       return;
     }
+
+    const isValid = await validateAlbum(albumCode);
+    if (!isValid) {
+      return;
+    }
+
     onUpload(selectedFiles, albumCode);
   };
 
@@ -105,9 +129,13 @@ export default function UploadDialog({
         <DialogFooter>
           <Button
             onClick={handleUpload}
-            disabled={isUploading || selectedFiles.length === 0}
+            disabled={isUploading || isValidating || selectedFiles.length === 0}
           >
-            {isUploading ? "Uploading..." : "Upload Images"}
+            {isUploading
+              ? "Uploading..."
+              : isValidating
+              ? "Validating..."
+              : "Upload Images"}
           </Button>
         </DialogFooter>
       </DialogContent>

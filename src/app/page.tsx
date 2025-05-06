@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Camera, Upload, Heart, Mail, Sparkles } from "lucide-react";
+import { Camera, Upload, Heart, Sparkles } from "lucide-react";
 
 export default function Home() {
   return (
@@ -38,7 +38,7 @@ export default function Home() {
                   href="/my-uploads"
                   className="font-medium text-primary hover:underline transition-colors duration-300"
                 >
-                  Our Photos
+                  My Uploads
                 </Link>{" "}
                 - upload your pictures and create lasting memories.
               </p>
@@ -54,9 +54,9 @@ export default function Home() {
                   href="/photo-album"
                   className="font-medium text-primary hover:underline transition-colors duration-300"
                 >
-                  Guest Photos
+                  Global Albums
                 </Link>{" "}
-                to see all the beautiful moments captured by our loved ones.
+                to see all the beautiful moments captured by your loved ones.
               </p>
             </div>
 
@@ -66,7 +66,7 @@ export default function Home() {
               </div>
               <p className="text-base leading-relaxed">
                 Need help or have questions? Use the Contact Us link in the
-                footer - we're here to help make your experience special.
+                footer - we are here to help make your experience special.
               </p>
             </div>
           </div>

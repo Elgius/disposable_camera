@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
 import { ImageIcon, Upload } from "lucide-react";
 import { toast } from "sonner";
@@ -11,10 +10,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ImageCard from "@/components/shared/ImageCard";
 import UploadDialog from "@/components/dropzone/UploadDialog";
 import { ImageData } from "@/lib/types";
-import { getMyUploads, uploadImage, deleteImage } from "@/lib/api";
+import { getMyUploads, deleteImage } from "@/lib/api";
 
 export default function MyUploadsPage() {
-  const router = useRouter();
   const [images, setImages] = useState<ImageData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
@@ -46,10 +44,26 @@ export default function MyUploadsPage() {
     console.log("Uploading to album:", albumCode);
 
     try {
-      const uploadPromises = files.map((file) => uploadImage(file));
-      const results = await Promise.all(uploadPromises);
+      const uploadPromises = files.map(async (file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("albumCode", albumCode);
 
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error("Upload failed");
+        }
+
+        return response.json();
+      });
+
+      const results = await Promise.all(uploadPromises);
       const successfulUploads = results.filter((result) => result.success);
+
       if (successfulUploads.length > 0) {
         setImages((prev) => [...successfulUploads.map((r) => r.data), ...prev]);
         toast.success(
@@ -95,7 +109,9 @@ export default function MyUploadsPage() {
       >
         <h1 className="text-3xl font-bold mb-2">My Uploads</h1>
         <p className="text-muted-foreground mb-8">
-          Upload and manage your personal image collection
+          Upload your images to the directories here. Since we are in Beta, no
+          images you upload will be stored in this page after you exit. All
+          images will be accessible at the albums you upload the images to.
         </p>
       </motion.div>
 
