@@ -12,7 +12,7 @@ interface UploadDropzoneProps {
   onFileSelect: (file: File) => void;
   onClearPreview: () => void;
   filePreview: File | null;
-  isUploading: boolean;
+  isUploading?: boolean;
   uploadProgress: number;
 }
 
@@ -20,37 +20,16 @@ export default function UploadDropzone({
   onFileSelect,
   onClearPreview,
   filePreview,
-  isUploading,
+  isUploading = false,
   uploadProgress,
 }: UploadDropzoneProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      if (acceptedFiles.length === 0) return;
-
-      const file = acceptedFiles[0];
-
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        console.error("File must be an image");
-        return;
-      }
-
-      // Validate file size (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        console.error("File size must be less than 5MB");
-        return;
-      }
-
-      onFileSelect(file);
-
-      // Create preview URL
-      const objectUrl = URL.createObjectURL(file);
-      setPreviewUrl(objectUrl);
-
-      // Clean up preview URL when component unmounts
-      return () => URL.revokeObjectURL(objectUrl);
+      acceptedFiles.forEach((file) => {
+        onFileSelect(file);
+      });
     },
     [onFileSelect]
   );
@@ -58,10 +37,8 @@ export default function UploadDropzone({
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      "image/*": [".jpeg", ".jpg", ".png", ".gif", ".webp"],
+      "image/*": [".png", ".jpg", ".jpeg", ".gif"],
     },
-    maxSize: 5 * 1024 * 1024, // 5MB
-    maxFiles: 1,
     disabled: isUploading,
   });
 
@@ -78,30 +55,19 @@ export default function UploadDropzone({
       {!filePreview ? (
         <div
           {...getRootProps()}
-          className={cn(
-            "border-2 border-dashed rounded-lg p-6 text-center transition-colors duration-200 cursor-pointer",
+          className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
             isDragActive
-              ? "border-primary bg-primary/5"
-              : "border-border hover:border-primary/50 hover:bg-secondary/40"
-          )}
+              ? "border-primary bg-primary/10"
+              : "border-muted-foreground/25 hover:border-primary/50"
+          } ${isUploading ? "opacity-50 cursor-not-allowed" : ""}`}
         >
           <input {...getInputProps()} />
-          <div className="flex flex-col items-center justify-center space-y-3">
-            <div className="bg-primary/10 rounded-full p-3">
-              <Upload className="h-6 w-6 text-primary" />
-            </div>
-            <div className="space-y-1">
-              <p className="text-sm font-medium">
-                {isDragActive ? "Drop the image here" : "Drag & drop an image"}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                JPG, PNG, GIF or WEBP (max 5MB)
-              </p>
-            </div>
-            <Button variant="secondary" size="sm" type="button">
-              Browse files
-            </Button>
-          </div>
+          <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+          <p className="text-sm text-muted-foreground">
+            {isDragActive
+              ? "Drop the files here..."
+              : "Drag & drop files here, or click to select files"}
+          </p>
         </div>
       ) : (
         <div className="relative rounded-lg overflow-hidden border bg-background">

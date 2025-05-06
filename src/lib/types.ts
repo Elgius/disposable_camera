@@ -1,9 +1,10 @@
 export interface ImageData {
   id: string;
+  name: string;
   url: string;
-  filename: string;
-  createdAt?: string;
-  userId?: string;
+  albumCode?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface User {

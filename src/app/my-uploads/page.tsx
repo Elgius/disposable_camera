@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "motion/react";
-import { Upload, ImageIcon } from "lucide-react";
+import { ImageIcon, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import ImageCard from "@/components/shared/ImageCard";
-import UploadDropzone from "@/components/dropzone/UploadDropzone";
+import UploadDialog from "@/components/dropzone/UploadDialog";
 import { ImageData } from "@/lib/types";
 import { getMyUploads, uploadImage, deleteImage } from "@/lib/api";
 
@@ -18,8 +18,7 @@ export default function MyUploadsPage() {
   const [images, setImages] = useState<ImageData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [filePreview, setFilePreview] = useState<File | null>(null);
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchImages();
@@ -42,48 +41,33 @@ export default function MyUploadsPage() {
     }
   };
 
-  const handleFileSelect = (file: File) => {
-    setFilePreview(file);
-  };
-
-  const handleUpload = async () => {
-    if (!filePreview) return;
-
+  const handleUpload = async (files: File[], albumCode: string) => {
     setIsUploading(true);
-
-    // Simulate upload progress
-    const progressInterval = setInterval(() => {
-      setUploadProgress((prev) => {
-        const increment = Math.floor(Math.random() * 10) + 5;
-        const newProgress = Math.min(prev + increment, 95);
-        return newProgress;
-      });
-    }, 300);
+    console.log("Uploading to album:", albumCode);
 
     try {
-      const response = await uploadImage(filePreview);
+      const uploadPromises = files.map((file) => uploadImage(file));
+      const results = await Promise.all(uploadPromises);
 
-      if (response.success) {
-        setUploadProgress(100);
-        setTimeout(() => {
-          setImages((prev) => [response.data, ...prev]);
-          toast.success("Image uploaded successfully");
-          setFilePreview(null);
-          setUploadProgress(0);
-          setIsUploading(false);
-        }, 500);
-      } else {
-        toast.error("Failed to upload image");
-        setIsUploading(false);
-        setUploadProgress(0);
+      const successfulUploads = results.filter((result) => result.success);
+      if (successfulUploads.length > 0) {
+        setImages((prev) => [...successfulUploads.map((r) => r.data), ...prev]);
+        toast.success(
+          `Successfully uploaded ${successfulUploads.length} images`
+        );
+      }
+
+      if (successfulUploads.length < files.length) {
+        toast.error(
+          `Failed to upload ${files.length - successfulUploads.length} images`
+        );
       }
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("Error uploading images:", error);
       toast.error("Something went wrong during upload");
-      setIsUploading(false);
-      setUploadProgress(0);
     } finally {
-      clearInterval(progressInterval);
+      setIsUploading(false);
+      setUploadDialogOpen(false);
     }
   };
 
@@ -119,22 +103,27 @@ export default function MyUploadsPage() {
         <div className="md:col-span-1">
           <Card className="h-full">
             <CardContent className="p-6">
-              <UploadDropzone
-                onFileSelect={handleFileSelect}
-                filePreview={filePreview}
-                isUploading={isUploading}
-                uploadProgress={uploadProgress}
-                onClearPreview={() => setFilePreview(null)}
-              />
-
-              <div className="mt-4">
+              <div className="flex flex-col items-center text-center space-y-4">
+                <div className="bg-primary/10 p-3 rounded-full">
+                  <Upload className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-lg">Upload Images</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Add images to your collection
+                  </p>
+                </div>
                 <Button
                   className="w-full"
-                  disabled={!filePreview || isUploading}
-                  onClick={handleUpload}
+                  onClick={() => setUploadDialogOpen(true)}
                 >
-                  {isUploading ? "Uploading..." : "Upload Image"}
+                  Start Upload
                 </Button>
+                <p className="text-xs text-muted-foreground">
+                  Supported formats: JPG, PNG, GIF
+                  <br />
+                  Max file size: 35MB
+                </p>
               </div>
             </CardContent>
           </Card>
@@ -176,6 +165,13 @@ export default function MyUploadsPage() {
           )}
         </div>
       </div>
+
+      <UploadDialog
+        open={uploadDialogOpen}
+        onOpenChange={setUploadDialogOpen}
+        onUpload={handleUpload}
+        isUploading={isUploading}
+      />
     </div>
   );
 }

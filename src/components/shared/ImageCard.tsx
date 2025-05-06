@@ -65,7 +65,7 @@ export default function ImageCard({
           )}
           <Image
             src={image.url}
-            alt={image.filename}
+            alt={image.name}
             className={cn(
               "object-cover transition-all duration-300",
               isLoading ? "opacity-0" : "opacity-100",
@@ -80,34 +80,47 @@ export default function ImageCard({
           {/* Hover overlay with actions */}
           <div
             className={cn(
-              "absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 transition-opacity duration-300",
+              "absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 transition-opacity duration-300",
               isHovered ? "opacity-100" : "opacity-0"
             )}
           >
-            <Button
-              variant="secondary"
-              size="icon"
-              className="mr-2"
-              onClick={() => setShowLightbox(true)}
-            >
-              <ExternalLink className="h-4 w-4" />
-            </Button>
-
-            {onDelete && (
-              <Button
-                variant="destructive"
-                size="icon"
-                onClick={() => setShowDeleteDialog(true)}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+            {/* 
+              This code conditionally renders the album code information when hovering over an image.
+              - It checks if image.albumCode exists (using the && operator as a conditional)
+              - If it exists, it displays a paragraph element showing the album code
+              - The paragraph has white text, small font size, medium font weight, and bottom margin
+              - This appears in the overlay that shows when a user hovers over the image
+            */}
+            {image.albumCode && (
+              <p className="text-white text-sm font-medium mb-4">
+                Album: {image.albumCode}
+              </p>
             )}
+            <div className="flex gap-2">
+              <Button
+                variant="secondary"
+                size="icon"
+                onClick={() => setShowLightbox(true)}
+              >
+                <ExternalLink className="h-4 w-4" />
+              </Button>
+
+              {onDelete && (
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => setShowDeleteDialog(true)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
         <div className="p-3">
-          <h3 className="font-medium truncate" title={image.filename}>
-            {image.filename}
+          <h3 className="font-medium truncate" title={image.name}>
+            {image.name}
           </h3>
           {formattedDate && (
             <p className="text-xs text-muted-foreground mt-1">
@@ -151,7 +164,7 @@ export default function ImageCard({
           <div className="relative max-h-[90vh] max-w-[90vw]">
             <Image
               src={image.url}
-              alt={image.filename}
+              alt={image.name}
               className="max-h-[90vh] max-w-[90vw] object-contain"
               width={1200}
               height={800}
